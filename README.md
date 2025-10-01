@@ -3,8 +3,8 @@
 This demo shows a clean separation where **Rust** runs as a microservice and **Jakarta EE** middleware calls it.
 
 ## Structure
-- `rust-service/` — Actix-Web microservice in Rust exposing `/add/{a}/{b}`.
-- `jakarta-backend/` — Jakarta EE WAR project that calls the Rust service and exposes `/compute?a=..&b=..`.
+- `main.rs` — Actix-Web microservice in Rust exposing `/add/{a}/{b}`.
+- `ComputeResource.java` — Jakarta EE WAR project that calls the Rust service and exposes `/compute?a=..&b=..`.
 
 ## Build & Run
 
