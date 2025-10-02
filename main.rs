@@ -1,15 +1,34 @@
-use actix_web::{get, web, App, HttpServer, Responder};
+use tonic::{transport::Server, Request, Response, Status};
+use compute::compute_service_server::{ComputeService, ComputeServiceServer};
+use compute::{AddRequest, AddReply};
 
-#[get("/add/{a}/{b}")]
-async fn add(path: web::Path<(i32, i32)>) -> impl Responder {
-    let (a, b) = path.into_inner();
-    format!("{}", a + b)
+pub mod compute {
+    tonic::include_proto!("compute");
 }
 
-#[actix_web::main]
-async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| App::new().service(add))
-        .bind(("127.0.0.1", 8081))?
-        .run()
-        .await
+#[derive(Default)]
+pub struct MyComputeService {}
+
+#[tonic::async_trait]
+impl ComputeService for MyComputeService {
+    async fn add(&self, request: Request<AddRequest>) -> Result<Response<AddReply>, Status> {
+        let req = request.into_inner();
+        let sum = req.a + req.b;
+        Ok(Response::new(AddReply { result: sum }))
+    }
+}
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let addr = "[::1]:50051".parse()?;
+    let compute_service = MyComputeService::default();
+
+    println!("Rust gRPC service listening on {}", addr);
+
+    Server::builder()
+        .add_service(ComputeServiceServer::new(compute_service))
+        .serve(addr)
+        .await?;
+
+    Ok(())
 }
