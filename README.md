@@ -4,8 +4,8 @@ This demo shows how to connect a Rust gRPC microservice (using Tonic) with a Jak
 
 ## Structure
 - `compute.proto` – shared protobuf definition.
-- `rust-grpc-service/` – Rust microservice using Tonic.
-- `jakarta-grpc-backend/` – Jakarta EE app that calls Rust via gRPC.
+- `main.rs` – Rust microservice using Tonic.
+- `GrpcClient.java` – Jakarta EE app that calls Rust via gRPC.
 
 ## Build & Run
 
